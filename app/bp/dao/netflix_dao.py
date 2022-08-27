@@ -66,21 +66,21 @@ class NetflixDAO:
     def get_movies_by_rating(self, category):
 
         categories = {
-            "children": "G",
-            "family": "'G', 'PG', 'PG-13'",
-            "adult": "'R', 'NC-17'"
+            "children": ("G"),
+            "family": ("G", "PG", "PG-13"),
+            "adult": ("R", "NC-17")
         }
 
         cursor = self.load_data()
-        query = """
+        query = f"""
                 SELECT title, rating, description
                 FROM netflix
-                WHERE rating IN (:category)
+                WHERE rating IN {categories[category]}
                 AND `type` = 'Movie'
                 ORDER BY release_year DESC
                 LIMIT 100
         """
-        cursor.execute(query, {"category": f"{categories[category]}"})
+        cursor.execute(query)
         result = cursor.fetchall()
         movies_by_rating = []
         for movie in result:
